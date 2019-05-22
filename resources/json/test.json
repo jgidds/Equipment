@@ -5,21 +5,30 @@
         "Status": "AVAILABLE",
         "Type": "Centrifuge",
         "EquipmentID": "c1",
-        "Region": "Alberta",
+        "Region": {
+          "Province": "AB",
+          "Name": "Alberta"
+        },
         "VIN": "1234567890"
       },
       {
         "Status": "RESERVE",
         "Type": "Centrifuge",
         "EquipmentID": "c2",
-        "Region": "Alberta",
+        "Region": {
+          "Province": "AB",
+          "Name": "Alberta"
+        },
         "VIN": "2345678901"
       },
       {
         "Status": "ON_ORDER",
         "Type": "Excavator",
         "EquipmentID": "e1",
-        "Region": "Alberta",
+        "Region": {
+          "Province": "AB",
+          "Name": "Alberta"
+        },
         "VIN": "3456789012"
       }
     ],
@@ -32,14 +41,20 @@
         "Status": "ON_ORDER",
         "Type": "Excavator",
         "EquipmentID": "e2",
-        "Region": "British Columbia",
+        "Region": {
+          "Province": "BC",
+          "Name": "British Columbia"
+        },
         "VIN": "4567890123"
       },
       {
         "Status": "ON_ORDER",
         "Type": "Excavator",
         "EquipmentID": "e3",
-        "Region": "British Columbia",
+        "Region": {
+          "Province": "BC",
+          "Name": "British Columbia"
+        },
         "VIN": "5678901234"
       }
     ],

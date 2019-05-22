@@ -55,44 +55,38 @@ public class JSONParser {
 
     private Equipment parseEquip(Object object) throws JSONException {
         JSONObject jsonEquip = (JSONObject) object;
-        int i = 1;
         for (String s : equipFields) {
             if (!jsonEquip.has(s)) {
                 throw new JSONException("JSON Object missing " + s + " field");
             }
         }
-        if (jsonEquip.get("Type") == "Centrifuge") {
-            return parseCentrifuge(object);
+        String VIN = (String) jsonEquip.get(Jsonifier.VIN_KEY);
+        String equipID = (String) jsonEquip.get(Jsonifier.EQUIP_ID_KEY);
+        Status status = parseStatus((String) jsonEquip.get(Jsonifier.STATUS_KEY));
+        Region region = parseRegion(jsonEquip.get(Jsonifier.REGION_KEY));
+        Equipment equip;
+        if (jsonEquip.get("Type").equals("Centrifuge")) {
+            equip = new Centrifuge(equipID, VIN, region);
         } else {
-            return parseExcavator(object);
+            equip = new Excavator(equipID, VIN, region);
         }
+        if (status != null) {
+            equip.setStatus(status);
+        }
+        return equip;
     }
 
-    private Centrifuge parseCentrifuge(Object object) {
-        JSONObject jsonEquip = (JSONObject) object;
-        String VIN = (String) jsonEquip.get(Jsonifier.VIN_KEY);
-        String equipID = (String) jsonEquip.get(Jsonifier.EQUIP_ID_KEY);
-        Centrifuge c = new Centrifuge(VIN, equipID);
-        Region region = (Region) jsonEquip.get(Jsonifier.REGION_KEY);
-        Status status = (Status) jsonEquip.get(Jsonifier.STATUS_KEY);
-        c.setRegion(region);
-        c.setStatus(status);
 
-        return c;
+    // Returns the Status object corresponding to the given description, or returns null if no such Status exists
+    private Status parseStatus(String statusDescription) {
+        for (Status s : Status.values()) {
+            if (s.getDescription().equals(statusDescription)) {
+                return s;
+            }
+        }
+        return null;
     }
 
-    private Excavator parseExcavator(Object object) {
-        JSONObject jsonEquip = (JSONObject) object;
-        String VIN = (String) jsonEquip.get(Jsonifier.VIN_KEY);
-        String equipID = (String) jsonEquip.get(Jsonifier.EQUIP_ID_KEY);
-        Excavator e = new Excavator(VIN, equipID);
-        Region region = (Region) jsonEquip.get(Jsonifier.REGION_KEY);
-        Status status = (Status) jsonEquip.get(Jsonifier.STATUS_KEY);
-        e.setRegion(region);
-        e.setStatus(status);
-
-        return e;
-    }
 
     public List<Region> parseRegionArray(String input) {
         if (input == null || input.isEmpty()) {
@@ -102,8 +96,13 @@ public class JSONParser {
         JSONArray jsonRegionArray = new JSONArray(input);
         for (Object object: jsonRegionArray) {
             JSONObject jsonObject = (JSONObject) object;
+            if (jsonObject.has("Province")) {
+                // todo!
+
+            }
+            Region region = parseRegion(object);
+
             try {
-                Region region = parseRegion(object);
                 listofRegions.add(region);
             } catch (JSONException e) {
                 System.out.println("The following JSONObject was not parsed");
@@ -115,8 +114,8 @@ public class JSONParser {
 
     private Region parseRegion(Object object) throws JSONException {
         JSONObject jsonObject = (JSONObject) object;
-        if (!jsonObject.has("Name") || !jsonObject.has("Equipment")) {
-            throw new JSONException("JSON Object is missing field");
+        if (!jsonObject.has("Name")) {
+            throw new JSONException("JSON Object is missing name field");
         }
         Region region;
         if (jsonObject.has("Province") && jsonObject.get("Province") != null) {
@@ -124,16 +123,17 @@ public class JSONParser {
         } else {
             region = new Region(jsonObject.get("Name").toString());
         }
-
-        for (Object equipObject : jsonObject.getJSONArray(Jsonifier.EQUIP_KEY)) {
-            JSONObject jsonEquip = (JSONObject) equipObject;
-            region.addEquipment(parseEquip(jsonEquip));
+        if (jsonObject.has("Equipment")) {
+            for (Object equipObject : jsonObject.getJSONArray(Jsonifier.EQUIP_KEY)) {
+                JSONObject jsonEquip = (JSONObject) equipObject;
+                region.addEquipment(parseEquip(jsonEquip));
+            }
+            region.correctRegion();
         }
-        region.correctRegion();
+
 
         return region;
     }
-
 
 
 }

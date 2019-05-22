@@ -52,6 +52,16 @@ public abstract class Equipment {
 
     }
 
+    public Equipment(String equipID, String VIN, Region region) {
+        if (VIN == null || VIN.length() == 0 || equipID == null || equipID.length() == 0) {
+            throw new EmptyStringException("Equipment must have ID and VIN Number");
+        }
+        status = Status.ON_ORDER;
+        this.equipID = equipID;
+        this.vin = VIN;
+        setRegion(region);
+    }
+
     public Equipment(String equipID, String VIN, String make, String model) {
         if (VIN == null || VIN.length() == 0 || equipID == null || equipID.length() == 0) {
             throw new EmptyStringException("Equipment must have ID and VIN Number");
@@ -64,6 +74,7 @@ public abstract class Equipment {
         this.vin = VIN;
         this.make = make;
         this.model = model;
+
 
         // todo!! check that VIN number and equipID are valid and unique
 
@@ -170,14 +181,14 @@ public abstract class Equipment {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Equipment)) return false;
         Equipment equipment = (Equipment) o;
-        return equipID.equals(equipment.equipID);
+        return Objects.equals(equipID, equipment.equipID) &&
+                Objects.equals(vin, equipment.vin);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(equipID);
+        return Objects.hash(equipID, vin);
     }
-
 }

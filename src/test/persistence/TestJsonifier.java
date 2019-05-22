@@ -39,26 +39,26 @@ class TestJsonifier {
     }
 
 
-    @Test
-    void equipIdToJSON() {
-        String eq1ID = eq1.getEquipID();
-        jsonOb = Jsonifier.equipIdToJSON(eq1ID);
-        assertTrue(jsonOb.has("EquipmentID"));
-        System.out.println(jsonOb.toString(2));
-    }
+//    @Test
+//    void equipIdToJSON() {
+//        String eq1ID = eq1.getEquipID();
+//        jsonOb = Jsonifier.equipIdToJSON(eq1ID);
+//        assertTrue(jsonOb.has("EquipmentID"));
+//        System.out.println(jsonOb.toString(2));
+//    }
 
-    @Test
-    void typetoJSON() {
-        String string = eq1.getType();
-        jsonOb = Jsonifier.typetoJSON(string);
-        assertTrue(jsonOb.has("Type"));
-    }
-
-    @Test
-    void statusToJSON() {
-        jsonOb = Jsonifier.statusToJSON(eq1.getStatus());
-        assertTrue(jsonOb.has("Status"));
-    }
+//    @Test
+//    void typetoJSON() {
+//        String string = eq1.getType();
+//        jsonOb = Jsonifier.typetoJSON(string);
+//        assertTrue(jsonOb.has("Type"));
+//    }
+//
+//    @Test
+//    void statusToJSON() {
+//        jsonOb = Jsonifier.statusToJSON(eq1.getStatus());
+//        assertTrue(jsonOb.has("Status"));
+//    }
 
     @Test
     void regionToJSON() {

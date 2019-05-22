@@ -28,48 +28,54 @@ public class Jsonifier {
     public static List<String> regionFields;
 
 
-    // EFFECTS: returns JSON representation of Equip ID
-    public static JSONObject equipIdToJSON(String equipID) {
-        JSONObject equipIDJson = new JSONObject();
-        equipIDJson.put(EQUIP_ID_KEY, equipID);
-        return equipIDJson;
-    }
+//    // EFFECTS: returns JSON representation of Equip ID
+//    public static JSONObject equipIdToJSON(String equipID) {
+//        JSONObject equipIDJson = new JSONObject();
+//        equipIDJson.put(EQUIP_ID_KEY, equipID);
+//        return equipIDJson;
+//    }
+//
+//    // EFFECTS: returns JSON representation of Equip Type
+//    public static JSONObject typetoJSON(String equipType) {
+//        JSONObject equipTypeJson = new JSONObject();
+//        equipTypeJson.put(TYPE_KEY, equipType);
+//        return equipTypeJson;
+//    }
+//
+//    // EFFECTS: returns JSON representation of Status
+//    public static JSONObject statusToJSON(Status status) {
+//        JSONObject statusJson = new JSONObject();
+//        statusJson.put(STATUS_KEY, status);
+//        return statusJson;
+//    }
+//
+//    // EFFECTS: returns JSON representation of Location
+//    public static JSONObject locationToJSON(Location location) {
+//        JSONObject locationJson = new JSONObject();
+//        locationJson.put(LOCATION_KEY, location);
+//        return locationJson;
+//    }
 
-    // EFFECTS: returns JSON representation of Equip Type
-    public static JSONObject typetoJSON(String equipType) {
-        JSONObject equipTypeJson = new JSONObject();
-        equipTypeJson.put(TYPE_KEY, equipType);
-        return equipTypeJson;
-    }
 
-    // EFFECTS: returns JSON representation of Status
-    public static JSONObject statusToJSON(Status status) {
-        JSONObject statusJson = new JSONObject();
-        statusJson.put(STATUS_KEY, status);
-        return statusJson;
-    }
-
-    // EFFECTS: returns JSON representation of Location
-    public static JSONObject locationToJSON(Location location) {
-        JSONObject locationJson = new JSONObject();
-        locationJson.put(LOCATION_KEY, location);
-        return locationJson;
-    }
-
-
-    // EFFECTS: returns JSON representation of an Equip object
+    // EFFECTS: returns JSONObject representation of Equipment with these fields:
+    //              - Equipment ID
+    //              - Type
+    //              - Status
+    //              - Region <- Name and Province
+    //              - VIN
     public static JSONObject equipToJson(Equipment equipment) {
         JSONObject equipJson = new JSONObject();
         equipJson.put(EQUIP_ID_KEY, equipment.getEquipID());
         equipJson.put(TYPE_KEY, equipment.getType());
         equipJson.put(STATUS_KEY, equipment.getStatus());
-        equipJson.put(REGION_KEY, equipment.getRegion().getName());
+        System.out.println(equipRegionToJSON(equipment.getRegion()).toString(2));
+        equipJson.put(REGION_KEY, equipRegionToJSON(equipment.getRegion()));
         equipJson.put(VIN_KEY, equipment.getVin());
 
         return equipJson;
     }
 
-    // EFFECTS: returns JSON array representing list of equip objects
+    // EFFECTS: returns JSONArray of JSONObjects representing Equipment
     public static JSONArray equipListToJSON(List<Equipment> equips) {
         JSONArray equipArray = new JSONArray();
         for (Equipment e: equips) {
@@ -88,7 +94,7 @@ public class Jsonifier {
 
         return jsonArray;
     }
-    // EFFECTS: returns JSON representation of Equipment's Region
+    // EFFECTS: returns JSON representation of Region
     public static JSONObject regionToJSON(Region region) {
         JSONObject jsonObject = new JSONObject();
         if (region.getProvince() != null) {
@@ -97,6 +103,17 @@ public class Jsonifier {
         jsonObject.put(NAME, region.getName());
         JSONArray equipArray = equipListToJSON(region.getEquipment());
         jsonObject.put(EQUIP_KEY, equipArray);
+
+        return jsonObject;
+    }
+
+    // EFFECTS: returns JSON representation of Equipment's Region
+    public static JSONObject equipRegionToJSON(Region region) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(NAME, region.getName());
+        if (region.getProvince() != null) {
+            jsonObject.put(PROVINCE_KEY, region.getProvince());
+        }
 
         return jsonObject;
     }

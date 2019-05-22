@@ -26,6 +26,17 @@ public class Excavator extends Equipment{
         this.maxDigDepth = STANDARD_DIG_DEPTH;
     }
 
+    public Excavator(String equipID, String VIN, Region region) {
+        super(equipID, VIN, region);
+        this.type = "Excavator";
+        if (maxDigDepth < 0) {
+            throw new NegativeInputException();
+        }
+
+        this.maxDigDepth = STANDARD_DIG_DEPTH;
+    }
+
+
     public Excavator(String equipID, String VIN, String make, String model, Region region, Float maxDigDepth) {
         super(equipID, VIN, make, model, region);
         this.maxDigDepth = maxDigDepth;

@@ -39,12 +39,12 @@ public class JsonFileIO {
     }
 
 //    // EFFECTS: saves the equipment to jsonDataFile
-    public static void write(List<Equipment> equipment) {
-        JSONArray jsonArray = Jsonifier.equipListToJSON(equipment);
-        String jsonEquipString = jsonArray.toString(2);
+    public static void write(List<Region> region) {
+        JSONArray jsonArray = Jsonifier.regionListToJSON(region);
+        String jsonRegionString = jsonArray.toString(2);
         try {
             FileWriter fileWriter = new FileWriter(JsonFileIO.jsonDataFile);
-            fileWriter.write(jsonEquipString);
+            fileWriter.write(jsonRegionString);
             fileWriter.close();
         } catch (IOException e) {
             // should this exception be thrown!??

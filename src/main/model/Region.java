@@ -17,7 +17,8 @@ import java.util.List;
 public class Region {
     private String name;
     private Province province;
-    private List<Equipment> equipment;
+    private List<Equipment> equipment;  // todo maybe equipment should be stored in hashset instead of array
+
 
     // EFFECTS: Creates a Region with the given name and an empty equipment list
     public Region(String name) {
@@ -46,13 +47,13 @@ public class Region {
                 break;
             }
         }
-        if (! validProv) {
+        if (!validProv) {
             throw new ProvinceException("Not a valid province");
         }
         this.province = prov;
         this.name = prov.toString();
         equipment = new ArrayList<>();
-        // todo!!
+
     }
 
     // EFFECTS: Returns the name of the Region
@@ -110,6 +111,8 @@ public class Region {
         }
     }
 
+    // Represents the fixed set of Canadian provinces
+
     public Province getProvince() {
         return province;
     }
@@ -123,7 +126,13 @@ public class Region {
         }
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     public enum Province {
+
         AB("Alberta"),
         BC("British Columbia"),
         MB("Manitoba"),
@@ -133,25 +142,20 @@ public class Region {
         NS("Nova Scotia"),
         NU("Nunavut"),
         ON("Ontario"),
-        PE ("Prince Edward Island"),
+        PE("Prince Edward Island"),
         QC("Quebec"),
         SK("Saskatchewan"),
         YK("Yukon");
 
         private String description;
 
-        Province(String description) {this.description = description; }
+        Province(String description) {
+            this.description = description;
+        }
 
         @Override
         public String toString() {
             return description;
         }
-
     }
-
-
-
-
-
-
 }
