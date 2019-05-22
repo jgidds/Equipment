@@ -13,8 +13,9 @@ public class ConsoleApp {
     private static Scanner input;
     private static String userInput;
     private static boolean exit = false;
-    private static String doubleDash = "=================================================";
-    private static String singleDash = "-------------------------------------------------";
+    private static String doubleDash = "====================================================";
+    private static String singleDash = "----------------------------------------------------";
+    private static String columnFormat = "%-7s %-11s %-30s %n";
 
 
     public static void main(String[] args) {
@@ -25,14 +26,14 @@ public class ConsoleApp {
 //        userInput = input.nextLine();
 //        regionActionfromInput();
         }
-        close();
+        saveChanges();
     }
 
     // EFFECTS: Shows top-level view of Regions
     public static void displayRegions() {
         System.out.println("\n");
         System.out.println(doubleDash);
-        System.out.println("\tRegions");
+        System.out.println("Regions");
         System.out.println(singleDash);
         if (regions.isEmpty()) {
             System.out.println("There are no regions to display.");
@@ -48,9 +49,13 @@ public class ConsoleApp {
                 i++;
             }
             System.out.println(">  ");
-            int selection = input.nextInt();
-            if (regions.get(selection-1) != null) {
-                displayRegionMenu(regions.get(selection-1));
+            try {int selection = input.nextInt();
+                if (regions.get(selection-1) != null) {
+                    displayRegionMenu(regions.get(selection-1));
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input, please try again");
+                displayRegions();
             }
 
         }
@@ -71,18 +76,19 @@ public class ConsoleApp {
         System.out.println(singleDash);
         List<Equipment> regEquip = region.getEquipment();
         int i = 1;
-        System.out.println("  ID      Type    Status");
+        //System.out.println(" ID   Type                Status");
+        System.out.printf(columnFormat, "   ID", "Type", "Status");
         for (Equipment e : regEquip) {
-            System.out.println(i + ". "  + e.getEquipID() + "    " + e.getType() + "    " + e.getStatus().getDescription());
+            System.out.printf(columnFormat, i + ". " + e.getEquipID(), e.getType(), e.getStatus().getDescription());
             i++;
         }
         System.out.println("-------------------------------");
         System.out.println("     Enter equipment number to update status or transfer");
         System.out.println("     Enter 0 to return to Main Menu");
         System.out.println("> ");
-        userInput = input.nextLine();
+
         try {
-            int userInputNum = Integer.parseInt(userInput.substring(0,0));
+            int userInputNum = input.nextInt();
             if (userInputNum == 0) {
                 displayRegions();
             } else {
@@ -93,7 +99,7 @@ public class ConsoleApp {
                     displayRegionMenu(region);
                 }
             }
-        } catch (NumberFormatException e) {
+        } catch (InputMismatchException e) {
             System.out.println("Invalid input, please try again");
             displayRegionMenu(region);
         }
@@ -104,7 +110,7 @@ public class ConsoleApp {
 
     private static void displayEquipmentMenu(Equipment e, Region r) {
         System.out.println(doubleDash);
-        System.out.println(e.getEquipID() + "    " + e.getType());
+        System.out.printf("%-9s %-11s %-20s %n", e.getEquipID(), e.getType(), e.getStatus());
         System.out.println("Region: " + e.getRegion().getName());
         System.out.println(singleDash);
         System.out.println("Enter A to update equipment status as Available");
@@ -120,21 +126,25 @@ public class ConsoleApp {
             case 'A':
                 e.setStatus(Status.AVAILABLE);
                 System.out.println(e.getEquipID() + " set to Available");
+                saveChanges();
                 displayRegionMenu(r);
 
                 break;
             case 'B':
                 e.setStatus(Status.RESERVE);
+                saveChanges();
                 System.out.println(e.getEquipID() + " set to Reserved");
                 displayRegionMenu(r);
                 break;
             case 'C': //
                 e.setStatus(Status.COMMITTED);
                 System.out.println(e.getEquipID() + " set to Committed");
+                saveChanges();
                 displayRegionMenu(r);
                 break;
             case 'R':
                 e.setStatus(Status.REPAIR);
+                saveChanges();
                 System.out.println(e.getEquipID() + " set to Being Repaired");
                 displayRegionMenu(r);
                 break;
@@ -153,11 +163,12 @@ public class ConsoleApp {
 
     private static void transferEquipment(Equipment e, Region region) {
         System.out.println(singleDash);
-        System.out.println("Transfer " + e.getEquipID());
+        System.out.println("Transfer " + e.getType().toLowerCase() + " " + e.getEquipID() + " from " + region.getName());
+        System.out.println(doubleDash);
         System.out.println();
         int listIndex = 0;
         int i = 1;
-        System.out.println("Enter number beside region to transfer equipment to");
+        System.out.println("Enter number to choose region to transfer equipment to");
         System.out.println("Enter 0 to return to equipment menu");
         for (Region r: regions) {
             if (r != region) {
@@ -174,6 +185,7 @@ public class ConsoleApp {
                     displayEquipmentMenu(e, region);
                 } else if (regions.get(userInputNum) != null) {
                     e.setRegion(regions.get(userInputNum));
+                    saveChanges();
                     System.out.println(e.getEquipID() + " transferred to " + e.getRegion().getName());
                 } else {
                     System.out.println("Invalid input! Please try again");
@@ -207,7 +219,7 @@ public class ConsoleApp {
         input.nextLine();
     }
 
-    private static void close() {
+    private static void saveChanges() {
         JsonFileIO.write(regions);
     }
 
